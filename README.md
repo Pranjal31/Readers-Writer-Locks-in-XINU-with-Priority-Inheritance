@@ -61,8 +61,8 @@ If there is a lock in the arguments which is not held by calling process, this f
 (5) Using Variable Arguments
 The call releaseall (int numlocks,..), has a variable number of arguments. For instance, it could be:
 
-```releaseall(numlocks,ldes1, ldes2);
-releaseall(numlocks,ldes1, ldes2, ldes3, ldes4);```
+releaseall(numlocks,ldes1, ldes2);
+releaseall(numlocks,ldes1, ldes2, ldes3, ldes4);
 
 where numlocks = 2 in the first case and numlocks = 4 in the second case.
 
