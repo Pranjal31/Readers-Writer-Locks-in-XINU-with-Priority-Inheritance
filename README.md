@@ -36,6 +36,7 @@ There is also another subtle but important point to note. Consider the following
 In the modified implementation, no readers were kept waiting unless (i) a writer had already obtained the lock, or (ii) there was a higher or equal lock priority writer already waiting for the lock. Hence, when a writer or the last reader releases a lock, the lock should be next given to a process having the highest lock priority for the lock. In the case of equal lock priorities among readers or writers, the lock will be first given to the reader or writer that has the longest waiting time (in milliseconds) on the lock. If a writer’s lock priority is equal to the highest lock priority of the waiting reader, and the writer’s waiting time is no more than 0.6 second longer (think of it as a grace period for writer), the writer should be given preference to acquire the lock over the waiting reader. In any case, if a reader is chosen to have a lock, then all the other waiting readers having priority greater than that of the highest-priority waiting writer for the same lock should also be admitted.
 
 (3) Wait on Locks with Priority
+
 This call allows a process to wait on a lock with priority. The call will have the form:
 
     int lock (int ldes1, int type, int priority)
