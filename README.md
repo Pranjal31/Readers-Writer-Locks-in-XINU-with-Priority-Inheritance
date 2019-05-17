@@ -24,6 +24,7 @@ Acquisition of a lock for read/write: int lock (int ldes1, int type, int priorit
 Simultaneous release of multiple locks: int releaseall (int numlocks, int ldes1,…, int ldesN)
 
 (1) Lock Deletion
+
 There is a slight problem with XINU semaphores. The way XINU handles semaphore delete may have undesirable effects if a semaphore is deleted while a process or processes are waiting on it. In the original XINU implementation, sdelete readies processes waiting on a semaphore being deleted. So they will return from wait with OK.
 
 The lock system was implemented such that waiting on a lock returns a new constant DELETED instead of OK when returning due to a deleted lock. This will indicate to the user that the lock was deleted and not unlocked. As before, any calls to lock() after the lock is deleted should return SYSERR.
@@ -31,6 +32,7 @@ The lock system was implemented such that waiting on a lock returns a new consta
 There is also another subtle but important point to note. Consider the following scenario. Let us say that there are three processes A, B, and C.  Let A create a lock with descriptor=X. Let  A and B use  X to synchronize among themselves. Now, let us assume that A deletes the lock X. But B does not know about that. If, now, C tries to create a lock, there is a chance that it gets the same lock descriptor as that of X (lock descriptors are limited and hence can be reused). When B waits on X the next time, it should get a SYSERR. It should not acquire the lock C has now newly created, even if this lock has the same id as that of the previous one. This issue was also fixed as part of the project.
 
 (2) Locking Policy
+
 In the modified implementation, no readers were kept waiting unless (i) a writer had already obtained the lock, or (ii) there was a higher or equal lock priority writer already waiting for the lock. Hence, when a writer or the last reader releases a lock, the lock should be next given to a process having the highest lock priority for the lock. In the case of equal lock priorities among readers or writers, the lock will be first given to the reader or writer that has the longest waiting time (in milliseconds) on the lock. If a writer’s lock priority is equal to the highest lock priority of the waiting reader, and the writer’s waiting time is no more than 0.6 second longer (think of it as a grace period for writer), the writer should be given preference to acquire the lock over the waiting reader. In any case, if a reader is chosen to have a lock, then all the other waiting readers having priority greater than that of the highest-priority waiting writer for the same lock should also be admitted.
 
 (3) Wait on Locks with Priority
@@ -51,7 +53,9 @@ For READ:
 If the requesting process has specified the lock type as READ and has sufficiently high priority (larger than the highest priority writer process waiting for the lock), it acquires the lock, else not.
 For WRITE:
 In this case, the requesting process does not get the lock as WRITE locks are exclusive.
+
 (4) Releasing Locks
+
 Simultaneous release allows a process to release one or more locks simultaneously. The system call has the form
 
     int releaseall (int numlocks, int ldes1, ...)
@@ -59,6 +63,7 @@ and should be defined according to the locking policy given above. Also, each of
 If there is a lock in the arguments which is not held by calling process, this function needs to return SYSERR and should not release this lock. However, it will still release other locks which are held by the calling process.
 
 (5) Using Variable Arguments
+
 The call releaseall (int numlocks,..), has a variable number of arguments. For instance, it could be:
 
 ```
