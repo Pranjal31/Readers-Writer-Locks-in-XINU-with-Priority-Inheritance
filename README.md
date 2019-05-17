@@ -1,4 +1,4 @@
-**Objective:** To implement Readers-Writer lock in XINU and the priority inheritance protocol to solve the problem of priority inversion.
+**Objective:** To implement Readers-Writer locks in XINU and the priority inheritance protocol to solve the problem of priority inversion.
 
 **Motivation:**
 * Readers/writer locks are used to synchronize access to a shared data structure. A lock can be acquired for read or write operations. A lock acquired for reading can be shared by other readers, but a lock acquired for writing must be exclusive. However, XINU semaphores do not distinguish between read accesses, which can co-exist, and write accesses, which must be exclusive.
