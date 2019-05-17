@@ -36,7 +36,7 @@ In the modified implementation, no readers were kept waiting unless (i) a writer
 (3) Wait on Locks with Priority
 This call allows a process to wait on a lock with priority. The call will have the form:
 
-    ```int lock (int ldes1, int type, int priority)```
+    int lock (int ldes1, int type, int priority)
 where priority is any integer priority value (including negative values, positive values and zero).
 
 Thus when a process waits, it will be able to specify a wait priority. Rather than simply enqueuing the process at the end of the queue, the lock() call should now insert the process into the lock’s wait list according to the wait priority. Please note that the wait priority is different from a process’s scheduling priority specified in the create(..) system call. A larger value of the priority parameter means a higher priority.
@@ -54,7 +54,7 @@ In this case, the requesting process does not get the lock as WRITE locks are ex
 (4) Releasing Locks
 Simultaneous release allows a process to release one or more locks simultaneously. The system call has the form
 
-    ```int releaseall (int numlocks, int ldes1, ...)```
+    int releaseall (int numlocks, int ldes1, ...)
 and should be defined according to the locking policy given above. Also, each of the lock descriptors must correspond to a lock being held by the calling process.
 If there is a lock in the arguments which is not held by calling process, this function needs to return SYSERR and should not release this lock. However, it will still release other locks which are held by the calling process.
 
@@ -63,6 +63,7 @@ The call releaseall (int numlocks,..), has a variable number of arguments. For i
 
 ```releaseall(numlocks,ldes1, ldes2);
 releaseall(numlocks,ldes1, ldes2, ldes3, ldes4);```
+
 where numlocks = 2 in the first case and numlocks = 4 in the second case.
 
 The first call releases two locks ldes1 and ldes2. The second releases four locks. 
